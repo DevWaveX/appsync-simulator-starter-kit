@@ -1,3 +1,3 @@
-import { Book, books } from "../types/book";
+import { books } from "../data/books";
 
-export const handler = () => books
+export const handler = () => books;

@@ -1,3 +1,3 @@
-import { authors } from "../types/author";
+import { authors } from "../data/authors";
 
-export const handler = () => authors
+export const handler = () => authors;

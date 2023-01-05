@@ -79,5 +79,5 @@ const httpPort = 4000
 const wsPort = 4001
 const simulator = new AppSyncSimulator(httpPort, wsPort)
 simulator.start().then(() => {
-    console.log(`🚀 PCP App Sync Simulator started at http://localhost:${httpPort}/graphql`)
+    console.log(`🚀 App Sync Simulator started at http://localhost:${httpPort}/graphql`)
 })
