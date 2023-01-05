@@ -1,1 +1,1 @@
-# appsync-simullator-starter-kit
+# appsync-simulator-starter-kit
