@@ -42,17 +42,20 @@ We will configure the simulator with a simple GraphQL Schema (Books and authors 
 Here is the model, dataset and GraphQL schema we will use:
 
 <!-- CODE:START file=../src/types/author.ts -->
-``` TypeScript
+
+```TypeScript
 export type Author = {
     id: number,
     name: string
 }
 
 ```
+
 <!-- CODE:END -->
 
 <!-- CODE:START file=../src/types/book.ts -->
-``` TypeScript
+
+```TypeScript
 export type Book = {
     id: number
     title: string
@@ -60,10 +63,12 @@ export type Book = {
 }
 
 ```
+
 <!-- CODE:END -->
 
 <!-- CODE:START file=../src/data/authors.ts -->
-``` TypeScript
+
+```TypeScript
 import { Author } from "../types/author";
 
 export const authors: Author[] = [{
@@ -75,10 +80,12 @@ export const authors: Author[] = [{
     name: "Peter L. Garcia"
 }]
 ```
+
 <!-- CODE:END -->
 
 <!-- CODE:START file=../src/data/books.ts -->
-``` TypeScript
+
+```TypeScript
 import { Book } from "../types/book";
 
 export const books: Book[] = [
@@ -99,10 +106,12 @@ export const books: Book[] = [
     }
 ]
 ```
+
 <!-- CODE:END -->
 
 <!-- CODE:START file=../src/schema.gql -->
-``` GraphQL
+
+```GraphQL
 type Book {
   title: String
   author: Author
@@ -122,6 +131,7 @@ type Mutation {
   addBook(title: String, author: String): Book
 }
 ```
+
 <!-- CODE:END -->
 
 ### Pre-requisites
@@ -152,25 +162,30 @@ npm install amplify-appsync-simulator
 We will build handlers for our query operations and to resolve nested fields.
 
 <!-- CODE:START file=../src/resolvers/queryAuthors.ts -->
-``` TypeScript
+
+```TypeScript
 import { authors } from "../data/authors";
 
 export const handler = () => authors;
 
 ```
+
 <!-- CODE:END -->
 
 <!-- CODE:START file=../src/resolvers/queryBooks.ts -->
-``` TypeScript
+
+```TypeScript
 import { books } from "../data/books";
 
 export const handler = () => books;
 
 ```
+
 <!-- CODE:END -->
 
 <!-- CODE:START file=../src/resolvers/authorBooks.ts -->
-``` TypeScript
+
+```TypeScript
 import { AppSyncResolverEvent } from "aws-lambda";
 import { books } from "../data/books";
 import { Author } from "../types/author";
@@ -178,12 +193,14 @@ import { Author } from "../types/author";
 export const handler = (event: AppSyncResolverEvent<object, Author>) => {
     const author = event.source
     return books.filter((book) => book.authorId === author.id)
-} 
+}
 ```
+
 <!-- CODE:END -->
 
 <!-- CODE:START file=../src/resolvers/bookAuthor.ts -->
-``` TypeScript
+
+```TypeScript
 import { AppSyncResolverEvent } from "aws-lambda";
 import { authors } from "../data/authors";
 import { Book } from "../types/book";
@@ -192,8 +209,9 @@ export const handler = (event: AppSyncResolverEvent<object, Book>) => {
     const book = event.source
 
     return authors.find((author) => author.id === book.authorId)
-} 
+}
 ```
+
 <!-- CODE:END -->
 
 ### Create request/response mapping templates
@@ -201,22 +219,26 @@ export const handler = (event: AppSyncResolverEvent<object, Book>) => {
 Now we will create VTL files for our request and response mapping templates. These VTL files will have to be passed to the simulator as string so I created a function to read them from the filesystem.
 
 <!-- CODE:START file=../src/vtl/lambdaRequestMappingTemplate.vtl -->
-``` Velocity Template Language
+
+```Velocity Template Language
 {
     "version": "2018-05-29",
     "operation": "Invoke",
     "payload": $util.toJson($context)
 }
 ```
+
 <!-- CODE:END -->
 
 <!-- CODE:START file=../src/vtl/lambdaResponseMappingTemplate.vtl -->
-``` Velocity Template Language
+
+```Velocity Template Language
 #if($ctx.error)
      $util.error($ctx.error.message, $ctx.error.type, $ctx.result)
  #end
  $util.toJson($ctx.result)
 ```
+
 <!-- CODE:END -->
 
 ### Build the AppSync Simulator 🚀
@@ -226,7 +248,8 @@ Here is the interesting part! We will create the AppSync Simulator with all the 
 💡Tips: One interesting aspect is that, if you are using AWS CDK, you can share some pieces between the way you configure the simulator and the way your build your constructs.
 
 <!-- CODE:START file=../src/main.ts -->
-``` TypeScript
+
+```TypeScript
 import {
     AmplifyAppSyncSimulator,
     AmplifyAppSyncSimulatorAuthenticationType,
@@ -311,6 +334,7 @@ simulator.start().then(() => {
     console.log(`🚀 App Sync Simulator started at http://localhost:${httpPort}/graphql`)
 })
 ```
+
 <!-- CODE:END -->
 
 And we can finally run our simulator ✨
