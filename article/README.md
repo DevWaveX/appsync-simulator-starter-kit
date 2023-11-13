@@ -14,10 +14,11 @@ publications:
     platform: devTo
     published: true
   - id: 65529484b114e923524dffc3
-    url: to be defined
+    url: TBD
     platform: hashnode
     publicationId: 62019a434efba97010a97bb9
 ---
+
 
 # Boost local development with AWS AppSync Simulator🚀✨
 
